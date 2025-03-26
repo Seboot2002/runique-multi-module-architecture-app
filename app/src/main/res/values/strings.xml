@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">MyOwnRunique</string>
+    <string name="title_analytics_feature">Analytics</string>
+    <string name="title_dynamicfeature">Analytics</string>
+    <string name="error_couldnt_load_module">Couldn\'t load module</string>
+    <string name="error_installation_failed">Unfortunately, the installation failed. Please try again later.</string>
+    <string name="installing_module">Installing module</string>
+    <string name="analytics_installed">Analytics installed</string>
+</resources>
