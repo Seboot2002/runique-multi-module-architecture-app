@@ -42,8 +42,8 @@ class RuniqueApp: Application() {
                 authViewModelModule,
                 appModule,
                 coreDataModule,
-                locationModule,
                 runPresentationModule,
+                locationModule,
                 databaseModule,
                 networkModule,
                 runDataModule

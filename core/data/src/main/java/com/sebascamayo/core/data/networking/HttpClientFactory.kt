@@ -55,20 +55,22 @@ class HttpClientFactory(
                 bearer {
                     // Establecemos los tokens en el sistema
                     loadTokens {
-                        val info = sessionStorage.get()
-                        BearerTokens(
-                            accessToken = info?.accessToken ?: "",
-                            refreshToken = info?.refreshToken ?: "",
+                        val info = sessionStorage.get() ?: return@loadTokens null
+                        println("Access token in cache: ${info.accessToken}")
+
+                        return@loadTokens BearerTokens(
+                            accessToken = info.accessToken,
+                            refreshToken = info.refreshToken,
                         )
 
                     }
                     refreshTokens {
-                        val info = sessionStorage.get()
+                        val info = sessionStorage.get() ?: return@refreshTokens null
                         val response = client.post<AccessTokenRequest, AccessTokenResponse>(
                             route = "/accessToken",
                             body = AccessTokenRequest(
-                                refreshToken = info?.refreshToken ?: "",
-                                userId = info?.userId ?: ""
+                                refreshToken = info.refreshToken,
+                                userId = info.userId
                             )
                         )
 
@@ -78,20 +80,18 @@ class HttpClientFactory(
                             val newAuthInfo = AuthInfo(
                                 accessToken = response.data.accessToken,
                                 refreshToken = response.data.refreshToken,
-                                userId = info?.userId ?: ""
+                                userId = info.userId
                             )
                             sessionStorage.set(newAuthInfo)
 
-                            BearerTokens(
+                            Timber.d("Nuevo accessToken: ${newAuthInfo.accessToken}")
+
+                            return@refreshTokens BearerTokens(
                                 accessToken = newAuthInfo.accessToken,
                                 refreshToken = newAuthInfo.refreshToken
                             )
                         } else {
-
-                            BearerTokens(
-                                accessToken = "",
-                                refreshToken = ""
-                            )
+                            null
                         }
                     }
                 }
@@ -100,8 +100,7 @@ class HttpClientFactory(
             HttpResponseValidator {
                 handleResponseException { cause, request ->
                     if(cause is ClientRequestException && cause.response.status.value == 401) {
-
-                        sessionStorage.set(null)
+                        Timber.w("401 Unauthorized error")
                     }
 
                 }

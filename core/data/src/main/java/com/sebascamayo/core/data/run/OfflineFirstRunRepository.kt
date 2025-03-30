@@ -41,7 +41,7 @@ class OfflineFirstRunRepository(
 
     override suspend fun fetchRuns(): EmptyResult<DataError> {
 
-        println("AHHHHH ${sessionStorage.get()?.accessToken}")
+        println("token in fetchRuns: ${sessionStorage.get()?.accessToken}")
 
         return when(val result = remoteRunDataSource.getRuns()) {
             is Result.Error -> result.asEmptyDataResult()
